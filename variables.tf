@@ -27,8 +27,8 @@ variable "clusters" {
     oidc_issuer_enabled                 = optional(bool)
     dns_prefix_private_cluster          = optional(string)
     workload_identity_enabled           = optional(bool)
-    identity_type = optional(string)
-    identity_ids  = optional(list(string))
+    identity_type                       = optional(string)
+    identity_ids                        = optional(list(string))
     linux_profile = optional(object({
       admin_username = string
       ssh_key = list(object({
@@ -70,62 +70,62 @@ variable "clusters" {
       tags                                = optional(map(string))
       ultra_ssd_enabled                   = optional(bool)
       linux_os_config = optional(object({
-      swap_file_size_mb             = optional(number)
-      transparent_huge_page_defrag  = optional(string)
-      transparent_huge_page_enabled = optional(string)
-      sysctl_config                 = optional(object({
-        fs_aio_max_nr                      = optional(number)
-        fs_file_max                        = optional(number)
-        fs_inotify_max_user_watches        = optional(number)
-        fs_nr_open                         = optional(number)
-        kernel_threads_max                 = optional(number)
-        net_core_netdev_max_backlog        = optional(number)
-        net_core_optmem_max                = optional(number)
-        net_core_rmem_default              = optional(number)
-        net_core_rmem_max                  = optional(number)
-        net_core_somaxconn                 = optional(number)
-        net_core_wmem_default              = optional(number)
-        net_core_wmem_max                  = optional(number)
-        net_ipv4_ip_local_port_range_max   = optional(number)
-        net_ipv4_ip_local_port_range_min   = optional(number)
-        net_ipv4_neigh_default_gc_thresh1  = optional(number)
-        net_ipv4_neigh_default_gc_thresh2  = optional(number)
-        net_ipv4_neigh_default_gc_thresh3  = optional(number)
-        net_ipv4_tcp_fin_timeout           = optional(number)
-        net_ipv4_tcp_keepalive_intvl       = optional(number)
-        net_ipv4_tcp_keepalive_probes      = optional(number)
-        net_ipv4_tcp_keepalive_time        = optional(number)
-        net_ipv4_tcp_max_syn_backlog       = optional(number)
-        net_ipv4_tcp_max_tw_buckets        = optional(number)
-        net_ipv4_tcp_tw_reuse              = optional(number)
-        net_netfilter_nf_conntrack_buckets = optional(number)
-        net_netfilter_nf_conntrack_max     = optional(number)
-        vm_max_map_count                   = optional(number)
-        vm_swappiness                      = optional(number)
-        vm_vfs_cache_pressure              = optional(number)
+        swap_file_size_mb             = optional(number)
+        transparent_huge_page_defrag  = optional(string)
+        transparent_huge_page_enabled = optional(string)
+        sysctl_config = optional(object({
+          fs_aio_max_nr                      = optional(number)
+          fs_file_max                        = optional(number)
+          fs_inotify_max_user_watches        = optional(number)
+          fs_nr_open                         = optional(number)
+          kernel_threads_max                 = optional(number)
+          net_core_netdev_max_backlog        = optional(number)
+          net_core_optmem_max                = optional(number)
+          net_core_rmem_default              = optional(number)
+          net_core_rmem_max                  = optional(number)
+          net_core_somaxconn                 = optional(number)
+          net_core_wmem_default              = optional(number)
+          net_core_wmem_max                  = optional(number)
+          net_ipv4_ip_local_port_range_max   = optional(number)
+          net_ipv4_ip_local_port_range_min   = optional(number)
+          net_ipv4_neigh_default_gc_thresh1  = optional(number)
+          net_ipv4_neigh_default_gc_thresh2  = optional(number)
+          net_ipv4_neigh_default_gc_thresh3  = optional(number)
+          net_ipv4_tcp_fin_timeout           = optional(number)
+          net_ipv4_tcp_keepalive_intvl       = optional(number)
+          net_ipv4_tcp_keepalive_probes      = optional(number)
+          net_ipv4_tcp_keepalive_time        = optional(number)
+          net_ipv4_tcp_max_syn_backlog       = optional(number)
+          net_ipv4_tcp_max_tw_buckets        = optional(number)
+          net_ipv4_tcp_tw_reuse              = optional(number)
+          net_netfilter_nf_conntrack_buckets = optional(number)
+          net_netfilter_nf_conntrack_max     = optional(number)
+          vm_max_map_count                   = optional(number)
+          vm_swappiness                      = optional(number)
+          vm_vfs_cache_pressure              = optional(number)
+        }))
       }))
-    }))
-      kubelet_config                      = optional(object({
-        allowed_unsafe_sysctls             = optional(list(string))
-        container_log_max_line             = optional(number)
-        container_log_max_size_mb          = optional(number)
-        cpu_cfs_quota_enabled              = optional(bool)
-        cpu_cfs_quota_period               = optional(string)
-        cpu_manager_policy                 = optional(string)
-        image_gc_high_threshold            = optional(number)
-        image_gc_low_threshold             = optional(number)
-        pod_max_pid                        = optional(number)
-        topology_manager_policy            = optional(string)
+      kubelet_config = optional(object({
+        allowed_unsafe_sysctls    = optional(list(string))
+        container_log_max_line    = optional(number)
+        container_log_max_size_mb = optional(number)
+        cpu_cfs_quota_enabled     = optional(bool)
+        cpu_cfs_quota_period      = optional(string)
+        cpu_manager_policy        = optional(string)
+        image_gc_high_threshold   = optional(number)
+        image_gc_low_threshold    = optional(number)
+        pod_max_pid               = optional(number)
+        topology_manager_policy   = optional(string)
       }))
     }))
     azure_active_directory_role_based_access_control = optional(object({
-      managed               = optional(bool)
-      tenant_id             = optional(string)
+      managed                = optional(bool)
+      tenant_id              = optional(string)
       admin_group_object_ids = optional(list(string))
-      client_app_id         = optional(string)
-      server_app_id         = optional(string)
-      server_app_secret     = optional(string)
-      azure_rbac_enabled    = optional(bool)
+      client_app_id          = optional(string)
+      server_app_id          = optional(string)
+      server_app_secret      = optional(string)
+      azure_rbac_enabled     = optional(bool)
     }))
     service_principal = optional(object({
       client_id     = string
@@ -139,12 +139,12 @@ variable "clusters" {
       log_analytics_workspace_id = string
     }))
     network_profile = optional(object({
-      network_plugin     = string
-      network_policy     = string
-      dns_service_ip     = string
-      outbound_type      = string
-      pod_cidr           = string
-      service_cidr       = string
+      network_plugin = string
+      network_policy = string
+      dns_service_ip = string
+      outbound_type  = string
+      pod_cidr       = string
+      service_cidr   = string
     }))
     aci_connector_linux = optional(object({
       subnet_name = string
@@ -216,9 +216,9 @@ variable "clusters" {
       })))
     }))
     http_proxy_config = optional(object({
-      http_proxy     = string
-      https_proxy    = string
-      trusted_ca     = string
+      http_proxy  = string
+      https_proxy = string
+      trusted_ca  = string
     }))
     ingress_application_gateway = optional(object({
       gateway_id   = optional(string)
@@ -272,7 +272,7 @@ variable "clusters" {
       admin_username = string
       admin_password = optional(string)
       license        = optional(string)
-      gmsa           = optional(object({
+      gmsa = optional(object({
         dns_server  = string
         root_domain = string
       }))
