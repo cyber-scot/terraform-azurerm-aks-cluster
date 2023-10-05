@@ -1,5 +1,5 @@
 resource "azurerm_kubernetes_cluster" "clust" {
-  for_each              = { for cluster in var.clusters : cluster.name => cluster }
+  for_each = { for cluster in var.clusters : cluster.name => cluster }
   // ... (your existing code)
 
   dynamic "aci_connector_linux" {
@@ -27,7 +27,7 @@ resource "azurerm_kubernetes_cluster" "clust" {
   dynamic "auto_scaler_profile" {
     for_each = each.value.auto_scaler_profile != null ? [each.value.auto_scaler_profile] : []
     content {
-      balance_similar_node_groups      = auto_scaler_profile.value.balance_similar_node_groups
+      balance_similar_node_groups = auto_scaler_profile.value.balance_similar_node_groups
       // ... (additional attributes as needed)
     }
   }
@@ -44,7 +44,7 @@ resource "azurerm_kubernetes_cluster" "clust" {
   dynamic "confidential_computing" {
     for_each = each.value.confidential_computing != null ? [each.value.confidential_computing] : []
     content {
-      enabled = confidential_computing.value.enabled
+      enabled                  = confidential_computing.value.enabled
       sgx_quote_helper_enabled = confidential_computing.value.sgx_quote_helper_enabled
     }
   }
@@ -53,10 +53,10 @@ resource "azurerm_kubernetes_cluster" "clust" {
   dynamic "http_proxy_config" {
     for_each = each.value.http_proxy_config != null ? [each.value.http_proxy_config] : []
     content {
-      http_proxy           = http_proxy_config.value.http_proxy
-      https_proxy          = http_proxy_config.value.https_proxy
-      trusted_ca          = http_proxy_config.value.trusted_ca
-      exception_list      = http_proxy_config.value.exception_list
+      http_proxy     = http_proxy_config.value.http_proxy
+      https_proxy    = http_proxy_config.value.https_proxy
+      trusted_ca     = http_proxy_config.value.trusted_ca
+      exception_list = http_proxy_config.value.exception_list
     }
   }
 
@@ -64,8 +64,8 @@ resource "azurerm_kubernetes_cluster" "clust" {
   dynamic "ingress_application_gateway" {
     for_each = each.value.ingress_application_gateway != null ? [each.value.ingress_application_gateway] : []
     content {
-      enabled                = ingress_application_gateway.value.enabled
-      subnet_id              = ingress_application_gateway.value.subnet_id
+      enabled   = ingress_application_gateway.value.enabled
+      subnet_id = ingress_application_gateway.value.subnet_id
       // ... (additional attributes as needed)
     }
   }
@@ -73,7 +73,7 @@ resource "azurerm_kubernetes_cluster" "clust" {
   dynamic "key_management_service" {
     for_each = each.value.key_management_service != null ? [each.value.key_management_service] : []
     content {
-      enabled     = key_management_service.value.enabled
+      enabled      = key_management_service.value.enabled
       key_vault_id = key_management_service.value.key_vault_id
       // ... (additional attributes as needed)
       key_vault_key_id = key_management_service.value.key_vault_key_id
@@ -83,7 +83,7 @@ resource "azurerm_kubernetes_cluster" "clust" {
   dynamic "key_vault_secrets_provider" {
     for_each = each.value.key_vault_secrets_provider != null ? [each.value.key_vault_secrets_provider] : []
     content {
-      enabled     = key_vault_secrets_provider.value.enabled
+      enabled      = key_vault_secrets_provider.value.enabled
       key_vault_id = key_vault_secrets_provider.value.key_vault_id
       // ... (additional attributes as needed)
     }
@@ -99,34 +99,34 @@ resource "azurerm_kubernetes_cluster" "clust" {
   dynamic "maintenance_window" {
     for_each = each.value.maintenance_window != null ? [each.value.maintenance_window] : []
     content {
-      day      = maintenance_window.value.day
-      hour     = maintenance_window.value.hour
-      minute   = maintenance_window.value.minute
+      day    = maintenance_window.value.day
+      hour   = maintenance_window.value.hour
+      minute = maintenance_window.value.minute
     }
   }
 
   dynamic "maintenance_window_auto_upgrade" {
     for_each = each.value.maintenance_window_auto_upgrade != null ? [each.value.maintenance_window_auto_upgrade] : []
     content {
-      day      = maintenance_window_auto_upgrade.value.day
-      hour     = maintenance_window_auto_upgrade.value.hour
-      minute   = maintenance_window_auto_upgrade.value.minute
+      day    = maintenance_window_auto_upgrade.value.day
+      hour   = maintenance_window_auto_upgrade.value.hour
+      minute = maintenance_window_auto_upgrade.value.minute
     }
   }
 
   dynamic "maintenance_window_node_os" {
     for_each = each.value.maintenance_window_node_os != null ? [each.value.maintenance_window_node_os] : []
     content {
-      day      = maintenance_window_node_os.value.day
-      hour     = maintenance_window_node_os.value.hour
-      minute   = maintenance_window_node_os.value.minute
+      day    = maintenance_window_node_os.value.day
+      hour   = maintenance_window_node_os.value.hour
+      minute = maintenance_window_node_os.value.minute
     }
   }
 
   dynamic "microsoft_defender" {
     for_each = each.value.microsoft_defender != null ? [each.value.microsoft_defender] : []
     content {
-      enabled = microsoft_defender.value.enabled
+      enabled                    = microsoft_defender.value.enabled
       log_analytics_workspace_id = microsoft_defender.value.log_analytics_workspace_id
     }
   }
