@@ -1,7 +1,7 @@
 
 ```hcl
 resource "azurerm_kubernetes_cluster" "cluster" {
-  for_each                            = {for cluster in var.clusters : cluster.name => cluster}
+  for_each                            = { for cluster in var.clusters : cluster.name => cluster }
   name                                = lower(each.value.name)
   kubernetes_version                  = each.value.kubernetes_version
   location                            = each.value.location
@@ -46,82 +46,82 @@ resource "azurerm_kubernetes_cluster" "cluster" {
   dynamic "default_node_pool" {
     for_each = each.value.default_node_pool != null ? [each.value.default_node_pool] : []
     content {
-      enable_auto_scaling                 = default_node_pool.value.enable_auto_scaling
-      max_count                           = default_node_pool.value.agents_max_count
-      min_count                           = default_node_pool.value.agents_min_count
-      type                                = default_node_pool.value.agents_type
-      capacity_reservation_group_id       = default_node_pool.value.capacity_reservation_group_id
-      orchestrator_version                = default_node_pool.value.orchestrator_version
-      custom_ca_trust_enabled             = default_node_pool.value.custom_ca_trust_enabled
-      enable_host_encryption              = default_node_pool.value.enable_host_encryption
-      host_group_id                       = default_node_pool.value.host_group_id
-      name                                = default_node_pool.value.pool_name
-      vm_size                             = default_node_pool.value.vm_size
-      os_disk_size_gb                     = default_node_pool.value.os_disk_size_gb
-      vnet_subnet_id                      = default_node_pool.value.subnet_id
-      enable_node_public_ip               = default_node_pool.value.enable_node_public_ip
-      zones                               = default_node_pool.value.availability_zones
-      node_count                          = default_node_pool.value.count
-      fips_enabled                        = default_node_pool.value.fips_enabled
-      kubelet_disk_type                   = default_node_pool.value.kubelet_disk_type
-      max_pods                            = default_node_pool.value.max_pods
-      message_of_the_day                  = default_node_pool.value.message_of_the_day
-      node_public_ip_prefix_id            = default_node_pool.value.node_public_ip_prefix_id
-      node_labels                         = default_node_pool.value.node_labels
-      node_taints                         = tolist(default_node_pool.value.node_taints)
-      only_critical_addons_enabled        = default_node_pool.value.only_critical_addons_enabled
-      os_sku                              = default_node_pool.value.os_sku
-      pod_subnet_id                       = default_node_pool.value.pod_subnet_id
-      proximity_placement_group_id        = default_node_pool.value.proximity_placement_group_id
-      scale_down_mode                     = default_node_pool.value.scale_down_mode
-      snapshot_id                         = default_node_pool.value.snapshot_id
-      temporary_name_for_rotation         = default_node_pool.value.temporary_name_for_rotation
-      tags                                = default_node_pool.value.tags
-      ultra_ssd_enabled                   = default_node_pool.value.ultra_ssd_enabled
+      enable_auto_scaling           = default_node_pool.value.enable_auto_scaling
+      max_count                     = default_node_pool.value.agents_max_count
+      min_count                     = default_node_pool.value.agents_min_count
+      type                          = default_node_pool.value.agents_type
+      capacity_reservation_group_id = default_node_pool.value.capacity_reservation_group_id
+      orchestrator_version          = default_node_pool.value.orchestrator_version
+      custom_ca_trust_enabled       = default_node_pool.value.custom_ca_trust_enabled
+      enable_host_encryption        = default_node_pool.value.enable_host_encryption
+      host_group_id                 = default_node_pool.value.host_group_id
+      name                          = default_node_pool.value.pool_name
+      vm_size                       = default_node_pool.value.vm_size
+      os_disk_size_gb               = default_node_pool.value.os_disk_size_gb
+      vnet_subnet_id                = default_node_pool.value.subnet_id
+      enable_node_public_ip         = default_node_pool.value.enable_node_public_ip
+      zones                         = default_node_pool.value.availability_zones
+      node_count                    = default_node_pool.value.count
+      fips_enabled                  = default_node_pool.value.fips_enabled
+      kubelet_disk_type             = default_node_pool.value.kubelet_disk_type
+      max_pods                      = default_node_pool.value.max_pods
+      message_of_the_day            = default_node_pool.value.message_of_the_day
+      node_public_ip_prefix_id      = default_node_pool.value.node_public_ip_prefix_id
+      node_labels                   = default_node_pool.value.node_labels
+      node_taints                   = tolist(default_node_pool.value.node_taints)
+      only_critical_addons_enabled  = default_node_pool.value.only_critical_addons_enabled
+      os_sku                        = default_node_pool.value.os_sku
+      pod_subnet_id                 = default_node_pool.value.pod_subnet_id
+      proximity_placement_group_id  = default_node_pool.value.proximity_placement_group_id
+      scale_down_mode               = default_node_pool.value.scale_down_mode
+      snapshot_id                   = default_node_pool.value.snapshot_id
+      temporary_name_for_rotation   = default_node_pool.value.temporary_name_for_rotation
+      tags                          = default_node_pool.value.tags
+      ultra_ssd_enabled             = default_node_pool.value.ultra_ssd_enabled
 
-        dynamic "linux_os_config" {
-    for_each = default_node_pool.value.linux_os_config != null ? [default_node_pool.value.linux_os_config] : []
-    content {
-      swap_file_size_mb             = linux_os_config.value.swap_file_size_mb
-      transparent_huge_page_defrag  = linux_os_config.value.transparent_huge_page_defrag
-      transparent_huge_page_enabled = linux_os_config.value.transparent_huge_page_enabled
-
-      dynamic "sysctl_config" {
-        for_each = linux_os_config.value.sysctl_config != null ? [linux_os_config.value.sysctl_config] : []
+      dynamic "linux_os_config" {
+        for_each = default_node_pool.value.linux_os_config != null ? [default_node_pool.value.linux_os_config] : []
         content {
-          fs_aio_max_nr                      = sysctl_config.value.fs_aio_max_nr
-          fs_file_max                        = sysctl_config.value.fs_file_max
-          fs_inotify_max_user_watches        = sysctl_config.value.fs_inotify_max_user_watches
-          fs_nr_open                         = sysctl_config.value.fs_nr_open
-          kernel_threads_max                 = sysctl_config.value.kernel_threads_max
-          net_core_netdev_max_backlog        = sysctl_config.value.net_core_netdev_max_backlog
-          net_core_optmem_max                = sysctl_config.value.net_core_optmem_max
-          net_core_rmem_default              = sysctl_config.value.net_core_rmem_default
-          net_core_rmem_max                  = sysctl_config.value.net_core_rmem_max
-          net_core_somaxconn                 = sysctl_config.value.net_core_somaxconn
-          net_core_wmem_default              = sysctl_config.value.net_core_wmem_default
-          net_core_wmem_max                  = sysctl_config.value.net_core_wmem_max
-          net_ipv4_ip_local_port_range_max   = sysctl_config.value.net_ipv4_ip_local_port_range_max
-          net_ipv4_ip_local_port_range_min   = sysctl_config.value.net_ipv4_ip_local_port_range_min
-          net_ipv4_neigh_default_gc_thresh1  = sysctl_config.value.net_ipv4_neigh_default_gc_thresh1
-          net_ipv4_neigh_default_gc_thresh2  = sysctl_config.value.net_ipv4_neigh_default_gc_thresh2
-          net_ipv4_neigh_default_gc_thresh3  = sysctl_config.value.net_ipv4_neigh_default_gc_thresh3
-          net_ipv4_tcp_fin_timeout           = sysctl_config.value.net_ipv4_tcp_fin_timeout
-          net_ipv4_tcp_keepalive_intvl       = sysctl_config.value.net_ipv4_tcp_keepalive_intvl
-          net_ipv4_tcp_keepalive_probes      = sysctl_config.value.net_ipv4_tcp_keepalive_probes
-          net_ipv4_tcp_keepalive_time        = sysctl_config.value.net_ipv4_tcp_keepalive_time
-          net_ipv4_tcp_max_syn_backlog       = sysctl_config.value.net_ipv4_tcp_max_syn_backlog
-          net_ipv4_tcp_max_tw_buckets        = sysctl_config.value.net_ipv4_tcp_max_tw_buckets
-          net_ipv4_tcp_tw_reuse              = sysctl_config.value.net_ipv4_tcp_tw_reuse
-          net_netfilter_nf_conntrack_buckets = sysctl_config.value.net_netfilter_nf_conntrack_buckets
-          net_netfilter_nf_conntrack_max     = sysctl_config.value.net_netfilter_nf_conntrack_max
-          vm_max_map_count                   = sysctl_config.value.vm_max_map_count
-          vm_swappiness                      = sysctl_config.value.vm_swappiness
-          vm_vfs_cache_pressure              = sysctl_config.value.vm_vfs_cache_pressure
+          swap_file_size_mb             = linux_os_config.value.swap_file_size_mb
+          transparent_huge_page_defrag  = linux_os_config.value.transparent_huge_page_defrag
+          transparent_huge_page_enabled = linux_os_config.value.transparent_huge_page_enabled
+
+          dynamic "sysctl_config" {
+            for_each = linux_os_config.value.sysctl_config != null ? [linux_os_config.value.sysctl_config] : []
+            content {
+              fs_aio_max_nr                      = sysctl_config.value.fs_aio_max_nr
+              fs_file_max                        = sysctl_config.value.fs_file_max
+              fs_inotify_max_user_watches        = sysctl_config.value.fs_inotify_max_user_watches
+              fs_nr_open                         = sysctl_config.value.fs_nr_open
+              kernel_threads_max                 = sysctl_config.value.kernel_threads_max
+              net_core_netdev_max_backlog        = sysctl_config.value.net_core_netdev_max_backlog
+              net_core_optmem_max                = sysctl_config.value.net_core_optmem_max
+              net_core_rmem_default              = sysctl_config.value.net_core_rmem_default
+              net_core_rmem_max                  = sysctl_config.value.net_core_rmem_max
+              net_core_somaxconn                 = sysctl_config.value.net_core_somaxconn
+              net_core_wmem_default              = sysctl_config.value.net_core_wmem_default
+              net_core_wmem_max                  = sysctl_config.value.net_core_wmem_max
+              net_ipv4_ip_local_port_range_max   = sysctl_config.value.net_ipv4_ip_local_port_range_max
+              net_ipv4_ip_local_port_range_min   = sysctl_config.value.net_ipv4_ip_local_port_range_min
+              net_ipv4_neigh_default_gc_thresh1  = sysctl_config.value.net_ipv4_neigh_default_gc_thresh1
+              net_ipv4_neigh_default_gc_thresh2  = sysctl_config.value.net_ipv4_neigh_default_gc_thresh2
+              net_ipv4_neigh_default_gc_thresh3  = sysctl_config.value.net_ipv4_neigh_default_gc_thresh3
+              net_ipv4_tcp_fin_timeout           = sysctl_config.value.net_ipv4_tcp_fin_timeout
+              net_ipv4_tcp_keepalive_intvl       = sysctl_config.value.net_ipv4_tcp_keepalive_intvl
+              net_ipv4_tcp_keepalive_probes      = sysctl_config.value.net_ipv4_tcp_keepalive_probes
+              net_ipv4_tcp_keepalive_time        = sysctl_config.value.net_ipv4_tcp_keepalive_time
+              net_ipv4_tcp_max_syn_backlog       = sysctl_config.value.net_ipv4_tcp_max_syn_backlog
+              net_ipv4_tcp_max_tw_buckets        = sysctl_config.value.net_ipv4_tcp_max_tw_buckets
+              net_ipv4_tcp_tw_reuse              = sysctl_config.value.net_ipv4_tcp_tw_reuse
+              net_netfilter_nf_conntrack_buckets = sysctl_config.value.net_netfilter_nf_conntrack_buckets
+              net_netfilter_nf_conntrack_max     = sysctl_config.value.net_netfilter_nf_conntrack_max
+              vm_max_map_count                   = sysctl_config.value.vm_max_map_count
+              vm_swappiness                      = sysctl_config.value.vm_swappiness
+              vm_vfs_cache_pressure              = sysctl_config.value.vm_vfs_cache_pressure
+            }
+          }
         }
       }
-    }
-  }
 
       dynamic "kubelet_config" {
         for_each = each.value.kubelet_config != null ? [each.value.kubelet_config] : []
@@ -266,12 +266,12 @@ resource "azurerm_kubernetes_cluster" "cluster" {
   dynamic "network_profile" {
     for_each = each.value.network_profile != null ? [each.value.network_profile] : []
     content {
-      network_plugin     = network_profile.value.network_plugin
-      network_policy     = network_profile.value.network_policy
-      dns_service_ip     = network_profile.value.dns_service_ip
-      outbound_type      = network_profile.value.outbound_type
-      pod_cidr           = network_profile.value.pod_cidr
-      service_cidr       = network_profile.value.service_cidr
+      network_plugin = network_profile.value.network_plugin
+      network_policy = network_profile.value.network_policy
+      dns_service_ip = network_profile.value.dns_service_ip
+      outbound_type  = network_profile.value.outbound_type
+      pod_cidr       = network_profile.value.pod_cidr
+      service_cidr   = network_profile.value.service_cidr
     }
   }
 
@@ -355,73 +355,73 @@ resource "azurerm_kubernetes_cluster" "cluster" {
 
 
 
-    dynamic "http_proxy_config" {
-      for_each = each.value.http_proxy_config != null ? [each.value.http_proxy_config] : []
-      content {
-        http_proxy     = http_proxy_config.value.http_proxy
-        https_proxy    = http_proxy_config.value.https_proxy
-        trusted_ca     = http_proxy_config.value.trusted_ca
-      }
+  dynamic "http_proxy_config" {
+    for_each = each.value.http_proxy_config != null ? [each.value.http_proxy_config] : []
+    content {
+      http_proxy  = http_proxy_config.value.http_proxy
+      https_proxy = http_proxy_config.value.https_proxy
+      trusted_ca  = http_proxy_config.value.trusted_ca
     }
+  }
 
 
-    dynamic "ingress_application_gateway" {
-      for_each = each.value.ingress_application_gateway != null ? [each.value.ingress_application_gateway] : []
-      content {
-        gateway_id   = ingress_application_gateway.value.gateway_id
-        gateway_name = ingress_application_gateway.value.gateway_name
-        subnet_cidr  = ingress_application_gateway.value.subnet_cidr
-        subnet_id    = ingress_application_gateway.value.subnet_id
-      }
+  dynamic "ingress_application_gateway" {
+    for_each = each.value.ingress_application_gateway != null ? [each.value.ingress_application_gateway] : []
+    content {
+      gateway_id   = ingress_application_gateway.value.gateway_id
+      gateway_name = ingress_application_gateway.value.gateway_name
+      subnet_cidr  = ingress_application_gateway.value.subnet_cidr
+      subnet_id    = ingress_application_gateway.value.subnet_id
     }
+  }
 
-    dynamic "key_management_service" {
-      for_each = each.value.key_management_service != null ? [each.value.key_management_service] : []
-      content {
-        key_vault_network_access = key_management_service.value.key_vault_network_access
-        key_vault_key_id         = key_management_service.value.key_vault_key_id
-      }
+  dynamic "key_management_service" {
+    for_each = each.value.key_management_service != null ? [each.value.key_management_service] : []
+    content {
+      key_vault_network_access = key_management_service.value.key_vault_network_access
+      key_vault_key_id         = key_management_service.value.key_vault_key_id
     }
+  }
 
-    dynamic "key_vault_secrets_provider" {
-      for_each = each.value.key_vault_secrets_provider != null ? [each.value.key_vault_secrets_provider] : []
-      content {
-        secret_rotation_enabled  = key_vault_secrets_provider.value.secret_rotation_enabled
-        secret_rotation_interval = key_vault_secrets_provider.value.secret_rotation_interval
-      }
+  dynamic "key_vault_secrets_provider" {
+    for_each = each.value.key_vault_secrets_provider != null ? [each.value.key_vault_secrets_provider] : []
+    content {
+      secret_rotation_enabled  = key_vault_secrets_provider.value.secret_rotation_enabled
+      secret_rotation_interval = key_vault_secrets_provider.value.secret_rotation_interval
     }
+  }
 
-    dynamic "kubelet_identity" {
-      for_each = each.value.kubelet_identity != null ? [each.value.kubelet_identity] : []
-      content {
-        user_assigned_identity_id = kubelet_identity.value.user_assigned_identity_id
-      }
+  dynamic "kubelet_identity" {
+    for_each = each.value.kubelet_identity != null ? [each.value.kubelet_identity] : []
+    content {
+      user_assigned_identity_id = kubelet_identity.value.user_assigned_identity_id
     }
+  }
 
 
 
-    dynamic "service_mesh_profile" {
-      for_each = each.value.service_mesh_profile != null ? [each.value.service_mesh_profile] : []
-      content {
-        mode                             = service_mesh_profile.value.mode
-        internal_ingress_gateway_enabled = service_mesh_profile.value.internal_ingress_gateway_enabled
-        external_ingress_gateway_enabled = service_mesh_profile.value.external_ingress_gateway_enabled
-      }
+  dynamic "service_mesh_profile" {
+    for_each = each.value.service_mesh_profile != null ? [each.value.service_mesh_profile] : []
+    content {
+      mode                             = service_mesh_profile.value.mode
+      internal_ingress_gateway_enabled = service_mesh_profile.value.internal_ingress_gateway_enabled
+      external_ingress_gateway_enabled = service_mesh_profile.value.external_ingress_gateway_enabled
     }
+  }
 
-    dynamic "microsoft_defender" {
-      for_each = each.value.microsoft_defender != null ? [each.value.microsoft_defender] : []
-      content {
-        log_analytics_workspace_id = microsoft_defender.value.log_analytics_workspace_id
-      }
+  dynamic "microsoft_defender" {
+    for_each = each.value.microsoft_defender != null ? [each.value.microsoft_defender] : []
+    content {
+      log_analytics_workspace_id = microsoft_defender.value.log_analytics_workspace_id
     }
+  }
 
-    dynamic "monitor_metrics" {
-      for_each = each.value.monitor_metrics != null ? [each.value.monitor_metrics] : []
-      content {
-        annotations_allowed = monitor_metrics.value.annotations_allowed
-        labels_allowed      = monitor_metrics.value.labels_allowed
-      }
+  dynamic "monitor_metrics" {
+    for_each = each.value.monitor_metrics != null ? [each.value.monitor_metrics] : []
+    content {
+      annotations_allowed = monitor_metrics.value.annotations_allowed
+      labels_allowed      = monitor_metrics.value.labels_allowed
+    }
   }
 }
 ```
@@ -455,9 +455,7 @@ No modules.
 
 | Name | Description |
 |------|-------------|
-| <a name="output_both_assigned_identity"></a> [both\_assigned\_identity](#output\_both\_assigned\_identity) | Both System and User Assigned Managed Identities for the AKS clusters. |
+| <a name="output_cluster_identities"></a> [cluster\_identities](#output\_cluster\_identities) | The identities of the Azure Kubernetes Cluster. |
 | <a name="output_cluster_ids"></a> [cluster\_ids](#output\_cluster\_ids) | The IDs of the created AKS clusters. |
 | <a name="output_cluster_kube_configs"></a> [cluster\_kube\_configs](#output\_cluster\_kube\_configs) | The kubeconfig files for the created AKS clusters. |
 | <a name="output_cluster_node_resource_groups"></a> [cluster\_node\_resource\_groups](#output\_cluster\_node\_resource\_groups) | The node resource groups for the created AKS clusters. |
-| <a name="output_system_assigned_identity"></a> [system\_assigned\_identity](#output\_system\_assigned\_identity) | The Principal ID of the System Assigned Managed Identity for the AKS clusters. |
-| <a name="output_user_assigned_identity"></a> [user\_assigned\_identity](#output\_user\_assigned\_identity) | The User Assigned Managed Identity IDs for the AKS clusters. |
