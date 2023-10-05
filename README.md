@@ -1,30 +1,32 @@
 
 ```hcl
 resource "azurerm_kubernetes_cluster" "cluster" {
-  for_each              = { for cluster in var.clusters : cluster.name => cluster }
-  name                    = lower(each.value.name)
-  kubernetes_version      = each.value.kubernetes_version
-  location                = each.value.location
-  resource_group_name     = each.value.rg_name
-  dns_prefix              = each.value.dns_prefix
-  sku_tier                = title(each.value.sku_tier)
-  private_cluster_enabled = each.value.private_cluster_enabled
-  tags                    = each.value.tags
-  http_application_routing_enabled  = each.value.http_application_routing_enabled
-  azure_policy_enabled              = each.value.azure_policy_enabled
-  role_based_access_control_enabled = each.value.role_based_access_control_enabled
-  open_service_mesh_enabled = each.value.open_service_mesh_enabled
-  private_dns_zone_id = each.value.private_dns_zone_id
+  for_each                            = { for cluster in var.clusters : cluster.name => cluster }
+  name                                = lower(each.value.name)
+  kubernetes_version                  = each.value.kubernetes_version
+  location                            = each.value.location
+  resource_group_name                 = each.value.rg_name
+  dns_prefix                          = each.value.dns_prefix
+  sku_tier                            = title(each.value.sku_tier)
+  private_cluster_enabled             = each.value.private_cluster_enabled
+  tags                                = each.value.tags
+  http_application_routing_enabled    = each.value.http_application_routing_enabled
+  azure_policy_enabled                = each.value.azure_policy_enabled
+  role_based_access_control_enabled   = each.value.role_based_access_control_enabled
+  open_service_mesh_enabled           = each.value.open_service_mesh_enabled
+  private_dns_zone_id                 = each.value.private_dns_zone_id
   private_cluster_public_fqdn_enabled = each.value.private_cluster_public_fqdn_enabled
   custom_ca_trust_certificates_base64 = each.value.custom_ca_trust_certificates_base64
-  disk_encryption_set_id = each.value.disk_encryption_set_id
-  edge_zone = each.value.edge_zone
-  image_cleaner_enabled = each.value.image_cleaner_enabled
-  image_cleaner_interval_hours = each.value.image_cleaner_interval_hours
-  local_account_disabled = each.value.local_account_disabled
-  node_os_channel_upgrade = each.value.node_os_channel_upgrade
-  node_resource_group = each.value.node_resource_group
-  oidc_issuer_enabled = each.value.oidc_issuer_enabled
+  disk_encryption_set_id              = each.value.disk_encryption_set_id
+  edge_zone                           = each.value.edge_zone
+  image_cleaner_enabled               = each.value.image_cleaner_enabled
+  image_cleaner_interval_hours        = each.value.image_cleaner_interval_hours
+  local_account_disabled              = each.value.local_account_disabled
+  node_os_channel_upgrade             = each.value.node_os_channel_upgrade
+  node_resource_group                 = each.value.node_resource_group
+  oidc_issuer_enabled                 = each.value.oidc_issuer_enabled
+  dns_prefix_private_cluster          = each.value.dns_prefix_private_cluster
+  automatic_channel_upgrade           = each.value.automatic_channel_upgrade
 
 
   dynamic "linux_profile" {
@@ -32,10 +34,10 @@ resource "azurerm_kubernetes_cluster" "cluster" {
     content {
       admin_username = linux_profile.value.admin_username
 
-    dynamic "ssh_key" {
-      for_each = linux_profile.value.ssh_key != null ? [linux_profile.value.ssh_key] : []
-      content {
-        key_data = ssh_key.value.ssh_key
+      dynamic "ssh_key" {
+        for_each = linux_profile.value.ssh_key != null ? [linux_profile.value.ssh_key] : []
+        content {
+          key_data = ssh_key.value.ssh_key
         }
       }
     }
@@ -44,55 +46,59 @@ resource "azurerm_kubernetes_cluster" "cluster" {
   dynamic "default_node_pool" {
     for_each = each.value.default_node_pool == false ? [each.value.default_node_pool] : []
     content {
-      enable_auto_scaling   = default_node_pool.value.enable_auto_scaling
-      max_count             = default_node_pool.value.agents_max_count
-      min_count             = default_node_pool.value.agents_min_count
-      type                  = default_node_pool.value.agents_type
-      capacity_reservation_group_id = default_node_pool.value.capacity_reservation_group_id
-      orchestrator_version  = default_node_pool.value.orchestrator_version
-      custom_ca_trust_enabled = default_node_pool.value.custom_ca_trust_enabled
+      enable_auto_scaling                 = default_node_pool.value.enable_auto_scaling
+      max_count                           = default_node_pool.value.agents_max_count
+      min_count                           = default_node_pool.value.agents_min_count
+      type                                = default_node_pool.value.agents_type
+      capacity_reservation_group_id       = default_node_pool.value.capacity_reservation_group_id
+      orchestrator_version                = default_node_pool.value.orchestrator_version
+      custom_ca_trust_enabled             = default_node_pool.value.custom_ca_trust_enabled
       custom_ca_trust_certificated_base64 = tolist(default_node_pool.value.custom_ca_trust_certificates_base64)
-      enable_host_encryption = default_node_pool.value.enable_host_encryption
-      host_group_id = default_node_pool.value.host_group_id
-      name                  = default_node_pool.value.pool_name
-      vm_size               = default_node_pool.value.vm_size
-      os_disk_size_gb       = default_node_pool.value.os_disk_size_gb
-      vnet_subnet_id        = default_node_pool.value.subnet_id
-      enable_node_public_ip = default_node_pool.value.enable_node_public_ip
-      zones                 = default_node_pool.value.availability_zones
-      node_count            = default_node_pool.value.count
-      fips_enabled          = default_node_pool.value.fips_enabled
-      kubelet_disk_type     = default_node_pool.value.kubelet_disk_type
-      max_pods              = default_node_pool.value.max_pods
-      message_of_the_day    = default_node_pool.value.message_of_the_day
-      node_public_ip_prefix_id = default_node_pool.value.node_public_ip_prefix_id
-      node_labels = default_node_pool.value.node_labels
-      node_taints = tolist(default_node_pool.value.node_taints)
-      only_critical_addons_enabled = default_node_pool.value.only_critical_addons_enabled
-      os_sku = default_node_pool.value.os_sku
-      pod_subnet_id = default_node_pool.value.pod_subnet_id
-      proximity_placement_group_id = default_node_pool.value.proximity_placement_group_id
-      scale_down_mode = default_node_pool.value.scale_down_mode
-      snapshot_id = default_node_pool.value.snapshot_id
-      temporary_name_for_rotation = default_node_pool.value.temporary_name_for_rotation
-      tags = default_node_pool.value.tags
-      ultra_ssd_enabled = default_node_pool.value.ultra_ssd_enabled
+      enable_host_encryption              = default_node_pool.value.enable_host_encryption
+      host_group_id                       = default_node_pool.value.host_group_id
+      name                                = default_node_pool.value.pool_name
+      vm_size                             = default_node_pool.value.vm_size
+      os_disk_size_gb                     = default_node_pool.value.os_disk_size_gb
+      vnet_subnet_id                      = default_node_pool.value.subnet_id
+      enable_node_public_ip               = default_node_pool.value.enable_node_public_ip
+      zones                               = default_node_pool.value.availability_zones
+      node_count                          = default_node_pool.value.count
+      fips_enabled                        = default_node_pool.value.fips_enabled
+      kubelet_disk_type                   = default_node_pool.value.kubelet_disk_type
+      max_pods                            = default_node_pool.value.max_pods
+      message_of_the_day                  = default_node_pool.value.message_of_the_day
+      node_public_ip_prefix_id            = default_node_pool.value.node_public_ip_prefix_id
+      node_labels                         = default_node_pool.value.node_labels
+      node_taints                         = tolist(default_node_pool.value.node_taints)
+      only_critical_addons_enabled        = default_node_pool.value.only_critical_addons_enabled
+      os_sku                              = default_node_pool.value.os_sku
+      pod_subnet_id                       = default_node_pool.value.pod_subnet_id
+      proximity_placement_group_id        = default_node_pool.value.proximity_placement_group_id
+      scale_down_mode                     = default_node_pool.value.scale_down_mode
+      snapshot_id                         = default_node_pool.value.snapshot_id
+      temporary_name_for_rotation         = default_node_pool.value.temporary_name_for_rotation
+      tags                                = default_node_pool.value.tags
+      ultra_ssd_enabled                   = default_node_pool.value.ultra_ssd_enabled
 
       upgrade_settings {
         max_surge = ""
       }
 
-      kubelet_config {
-
-      }
-
-      linux_os_config {
-
-      }
-
-      node_network_profile {
-
-      }
+      dynamic "kubelet_config" {
+        for_each = each.value.kubelet_config != null ? [each.value.kubelet_config] : []
+        content {
+          allowed_unsafe_sysctls      = kubelet_config.value.allowed_unsafe_sysctls
+      container_log_max_line      = kubelet_config.value.container_log_max_line
+      container_log_max_size_mb   = kubelet_config.value.container_log_max_size_mb
+      cpu_cfs_quota_enabled       = kubelet_config.value.cpu_cfs_quota_enabled
+      cpu_cfs_quota_period        = kubelet_config.value.cpu_cfs_quota_period
+      cpu_manager_policy          = kubelet_config.value.cpu_manager_policy
+      image_gc_high_threshold     = kubelet_config.value.image_gc_high_threshold
+      image_gc_low_threshold      = kubelet_config.value.image_gc_low_threshold
+      pod_max_pid                 = kubelet_config.value.pod_max_pid
+      topology_manager_policy     = kubelet_config.value.topology_manager_policy
+    }
+  }
     }
   }
 
@@ -134,23 +140,33 @@ resource "azurerm_kubernetes_cluster" "cluster" {
     }
   }
 
-  dynamic "network_profile" {
-    for_each = each.value.network_profile != null ? [each.value.network_profile] : []
+  dynamic "storage_profile" {
+    for_each = each.value.storage_profile != null ? [each.value.storage_profile] : []
     content {
-    network_plugin     = network_profile.value.network_plugin
-    network_policy     = network_profile.value.network_policy
-    dns_service_ip     = network_profile.value.dns_service_ip
-    docker_bridge_cidr = network_profile.value.docker_bridge_cidr
-    outbound_type      = network_profile.value.outbound_type
-    pod_cidr           = network_profile.value.pod_cidr
-    service_cidr       = network_profile.value.service_cidr
+      blob_driver_enabled           = storage_profile.value.blob_driver_enabled
+      disk_driver_enabled           = storage_profile.value.disk_driver_enabled
+      disk_driver_version           = storage_profile.value.disk_driver_version
+      file_driver_enabled           = storage_profile.value.file_driver_enabled
+      snapshot_controller_enabled   = storage_profile.value.snapshot_controller_enabled
     }
   }
 
-    dynamic "aci_connector_linux" {
+  dynamic "network_profile" {
+    for_each = each.value.network_profile != null ? [each.value.network_profile] : []
+    content {
+      network_plugin     = network_profile.value.network_plugin
+      network_policy     = network_profile.value.network_policy
+      dns_service_ip     = network_profile.value.dns_service_ip
+      docker_bridge_cidr = network_profile.value.docker_bridge_cidr
+      outbound_type      = network_profile.value.outbound_type
+      pod_cidr           = network_profile.value.pod_cidr
+      service_cidr       = network_profile.value.service_cidr
+    }
+  }
+
+  dynamic "aci_connector_linux" {
     for_each = each.value.aci_connector_linux != null ? [each.value.aci_connector_linux] : []
     content {
-      enabled     = aci_connector_linux.value.enabled
       subnet_name = aci_connector_linux.value.subnet_name
     }
   }
@@ -166,14 +182,31 @@ resource "azurerm_kubernetes_cluster" "cluster" {
     for_each = each.value.api_server_access_profile != null ? [each.value.api_server_access_profile] : []
     content {
       authorized_ip_ranges = api_server_access_profile.value.authorized_ip_ranges
+      subnet_id = api_server_access_profile.value.subnet_id
+      vnet_integration_enabled = api_server_access_profile.value.vnet_integration_enabled
     }
   }
 
   dynamic "auto_scaler_profile" {
     for_each = each.value.auto_scaler_profile != null ? [each.value.auto_scaler_profile] : []
     content {
-      balance_similar_node_groups      = auto_scaler_profile.value.balance_similar_node_groups
-      // ... (additional attributes as needed)
+      balance_similar_node_groups = auto_scaler_profile.value.balance_similar_node_groups
+      expander = auto_scaler_profile.value.expander
+      max_graceful_termination_sec = auto_scaler_profile.value.max_graceful_termination_sec
+      max_node_provisioning_time = auto_scaler_profile.value.max_node_provisioning_time
+      max_unready_nodes = auto_scaler_profile.value.max_unready_nodes
+      max_unready_percentage = auto_scaler_profile.value.max_unready_percentage
+      new_pod_scale_up_delay = auto_scaler_profile.value.new_pod_scale_up_delay
+      scale_down_delay_after_add = auto_scaler_profile.value.scale_down_delay_after_add
+      scale_down_delay_after_delete = auto_scaler_profile.value.scale_down_delay_after_delete
+      scale_down_delay_after_failure = auto_scaler_profile.value.scale_down_delay_after_failure
+      scan_interval = auto_scaler_profile.value.scan_interval
+      scale_down_unneeded = auto_scaler_profile.value.scale_down_unneeded
+      scale_down_unready = auto_scaler_profile.value.scale_down_unready
+      scale_down_utilization_threshold = auto_scaler_profile.value.scale_down_utilization_threshold
+      empty_bulk_delete_max = auto_scaler_profile.value.empty_bulk_delete_max
+      skip_nodes_with_local_storage = auto_scaler_profile.value.skip_nodes_with_local_storage
+      skip_nodes_with_system_pods = auto_scaler_profile.value.skip_nodes_with_system_pods
     }
   }
 
@@ -189,7 +222,6 @@ resource "azurerm_kubernetes_cluster" "cluster" {
   dynamic "confidential_computing" {
     for_each = each.value.confidential_computing != null ? [each.value.confidential_computing] : []
     content {
-      enabled = confidential_computing.value.enabled
       sgx_quote_helper_enabled = confidential_computing.value.sgx_quote_helper_enabled
     }
   }
@@ -198,10 +230,10 @@ resource "azurerm_kubernetes_cluster" "cluster" {
   dynamic "http_proxy_config" {
     for_each = each.value.http_proxy_config != null ? [each.value.http_proxy_config] : []
     content {
-      http_proxy           = http_proxy_config.value.http_proxy
-      https_proxy          = http_proxy_config.value.https_proxy
-      trusted_ca          = http_proxy_config.value.trusted_ca
-      exception_list      = http_proxy_config.value.exception_list
+      http_proxy     = http_proxy_config.value.http_proxy
+      https_proxy    = http_proxy_config.value.https_proxy
+      trusted_ca     = http_proxy_config.value.trusted_ca
+      exception_list = http_proxy_config.value.exception_list
     }
   }
 
@@ -209,18 +241,17 @@ resource "azurerm_kubernetes_cluster" "cluster" {
   dynamic "ingress_application_gateway" {
     for_each = each.value.ingress_application_gateway != null ? [each.value.ingress_application_gateway] : []
     content {
-      enabled                = ingress_application_gateway.value.enabled
-      subnet_id              = ingress_application_gateway.value.subnet_id
-      // ... (additional attributes as needed)
+      gateway_id   = ingress_application_gateway.value.gateway_id
+      gateway_name = ingress_application_gateway.value.gateway_name
+      subnet_cidr  = ingress_application_gateway.value.subnet_cidr
+      subnet_id    = ingress_application_gateway.value.subnet_id
     }
   }
 
   dynamic "key_management_service" {
     for_each = each.value.key_management_service != null ? [each.value.key_management_service] : []
     content {
-      enabled     = key_management_service.value.enabled
-      key_vault_id = key_management_service.value.key_vault_id
-      // ... (additional attributes as needed)
+      key_vault_network_access = key_management_service.value.key_vault_network_access
       key_vault_key_id = key_management_service.value.key_vault_key_id
     }
   }
@@ -228,9 +259,8 @@ resource "azurerm_kubernetes_cluster" "cluster" {
   dynamic "key_vault_secrets_provider" {
     for_each = each.value.key_vault_secrets_provider != null ? [each.value.key_vault_secrets_provider] : []
     content {
-      enabled     = key_vault_secrets_provider.value.enabled
-      key_vault_id = key_vault_secrets_provider.value.key_vault_id
-      // ... (additional attributes as needed)
+      secret_rotation_enabled = key_vault_secrets_provider.value.secret_rotation_enabled
+      secret_rotation_interval = key_vault_secrets_provider.value.secret_rotation_interval
     }
   }
 
@@ -244,34 +274,43 @@ resource "azurerm_kubernetes_cluster" "cluster" {
   dynamic "maintenance_window" {
     for_each = each.value.maintenance_window != null ? [each.value.maintenance_window] : []
     content {
-      day      = maintenance_window.value.day
-      hour     = maintenance_window.value.hour
-      minute   = maintenance_window.value.minute
+      day    = maintenance_window.value.day
+      hour   = maintenance_window.value.hour
+      minute = maintenance_window.value.minute
     }
   }
 
   dynamic "maintenance_window_auto_upgrade" {
     for_each = each.value.maintenance_window_auto_upgrade != null ? [each.value.maintenance_window_auto_upgrade] : []
     content {
-      day      = maintenance_window_auto_upgrade.value.day
-      hour     = maintenance_window_auto_upgrade.value.hour
-      minute   = maintenance_window_auto_upgrade.value.minute
+      day    = maintenance_window_auto_upgrade.value.day
+      hour   = maintenance_window_auto_upgrade.value.hour
+      minute = maintenance_window_auto_upgrade.value.minute
     }
   }
 
   dynamic "maintenance_window_node_os" {
     for_each = each.value.maintenance_window_node_os != null ? [each.value.maintenance_window_node_os] : []
     content {
-      day      = maintenance_window_node_os.value.day
-      hour     = maintenance_window_node_os.value.hour
-      minute   = maintenance_window_node_os.value.minute
+      day    = maintenance_window_node_os.value.day
+      hour   = maintenance_window_node_os.value.hour
+      minute = maintenance_window_node_os.value.minute
+    }
+  }
+
+  dynamic "service_mesh_profile" {
+    for_each = each.value.service_mesh_profile != null ? [each.value.service_mesh_profile] : []
+    content {
+      mode                           = service_mesh_profile.value.mode
+      internal_ingress_gateway_enabled = service_mesh_profile.value.internal_ingress_gateway_enabled
+      external_ingress_gateway_enabled = service_mesh_profile.value.external_ingress_gateway_enabled
     }
   }
 
   dynamic "microsoft_defender" {
     for_each = each.value.microsoft_defender != null ? [each.value.microsoft_defender] : []
     content {
-      enabled = microsoft_defender.value.enabled
+      enabled                    = microsoft_defender.value.enabled
       log_analytics_workspace_id = microsoft_defender.value.log_analytics_workspace_id
     }
   }
@@ -279,15 +318,9 @@ resource "azurerm_kubernetes_cluster" "cluster" {
   dynamic "monitor_metrics" {
     for_each = each.value.monitor_metrics != null ? [each.value.monitor_metrics] : []
     content {
-      enabled = monitor_metrics.value.enabled
-      // ... (additional attributes as needed)
+      annotations_allowed = monitor_metrics.value.annotations_allowed
+      labels_allowed = monitor_metrics.value.labels_allowed
     }
-  }
-
-
-
-  timeouts {
-    create = "20m"
   }
 }
 ```
@@ -316,7 +349,7 @@ No modules.
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| <a name="input_clusters"></a> [clusters](#input\_clusters) | A list of clusters to create | <pre>list(object({<br>    name                                = string<br>    kubernetes_version                  = string<br>    location                            = string<br>    rg_name                             = string<br>    dns_prefix                          = string<br>    sku_tier                            = string<br>    private_cluster_enabled             = bool<br>    tags                                = map(string)<br>    http_application_routing_enabled    = optional(bool)<br>    azure_policy_enabled                = optional(bool)<br>    role_based_access_control_enabled   = optional(bool)<br>    open_service_mesh_enabled           = optional(bool)<br>    private_dns_zone_id                 = optional(string)<br>    private_cluster_public_fqdn_enabled = optional(bool)<br>    custom_ca_trust_certificates_base64 = optional(string)<br>    disk_encryption_set_id              = optional(string)<br>    edge_zone                           = optional(string)<br>    image_cleaner_enabled               = optional(bool)<br>    image_cleaner_interval_hours        = optional(number)<br>    local_account_disabled              = optional(bool)<br>    node_os_channel_upgrade             = optional(string)<br>    node_resource_group                 = optional(string)<br>    oidc_issuer_enabled                 = optional(bool)<br>    linux_profile = optional(object({<br>      admin_username = string<br>      ssh_key = list(object({<br>        key_data = string<br>      }))<br>    }))<br>    default_node_pool = optional(object({<br>      enable_auto_scaling  = bool<br>      max_count            = number<br>      min_count            = number<br>      type                 = string<br>      orchestrator_version = string<br>      // ... (other attributes as needed)<br>    }))<br>    service_principal = optional(object({<br>      client_id     = string<br>      client_secret = string<br>    }))<br>    identity = optional(object({<br>      type         = string<br>      identity_ids = optional(list(string))<br>    }))<br>    oms_agent = optional(object({<br>      log_analytics_workspace_id = string<br>    }))<br>    network_profile = optional(object({<br>      network_plugin     = string<br>      network_policy     = string<br>      dns_service_ip     = string<br>      docker_bridge_cidr = string<br>      outbound_type      = string<br>      pod_cidr           = string<br>      service_cidr       = string<br>    }))<br>    aci_connector_linux = optional(object({<br>      enabled     = bool<br>      subnet_name = string<br>    }))<br>    automatic_channel_upgrade = optional(object({<br>      channel = string<br>    }))<br>    api_server_access_profile = optional(object({<br>      authorized_ip_ranges = list(string)<br>    }))<br>    auto_scaler_profile = optional(object({<br>      balance_similar_node_groups = bool<br>      // ... (additional attributes as needed)<br>    }))<br>    azure_active_directory_role_based_access_control = optional(object({<br>      azure_admin_group_object_ids = list(string)<br>      // ... (additional attributes as needed)<br>    }))<br>    confidential_computing = optional(object({<br>      enabled                  = bool<br>      sgx_quote_helper_enabled = bool<br>    }))<br>    http_proxy_config = optional(object({<br>      http_proxy     = string<br>      https_proxy    = string<br>      trusted_ca     = string<br>      exception_list = list(string)<br>    }))<br>    ingress_application_gateway = optional(object({<br>      enabled   = bool<br>      subnet_id = string<br>      // ... (additional attributes as needed)<br>    }))<br>    key_management_service = optional(object({<br>      enabled          = bool<br>      key_vault_id     = string<br>      key_vault_key_id = string<br>    }))<br>    key_vault_secrets_provider = optional(object({<br>      enabled      = bool<br>      key_vault_id = string<br>    }))<br>    kubelet_identity = optional(object({<br>      user_assigned_identity_id = string<br>    }))<br>    maintenance_window = optional(object({<br>      day    = string<br>      hour   = string<br>      minute = string<br>    }))<br>    maintenance_window_auto_upgrade = optional(object({<br>      day    = string<br>      hour   = string<br>      minute = string<br>    }))<br>    maintenance_window_node_os = optional(object({<br>      day    = string<br>      hour   = string<br>      minute = string<br>    }))<br>    microsoft_defender = optional(object({<br>      enabled                    = bool<br>      log_analytics_workspace_id = string<br>    }))<br>    monitor_metrics = optional(object({<br>      enabled = bool<br>      // ... (additional attributes as needed)<br>    }))<br>  }))</pre> | `[]` | no |
+| <a name="input_clusters"></a> [clusters](#input\_clusters) | A list of clusters to create | <pre>list(object({<br>    name                                = string<br>    kubernetes_version                  = string<br>    location                            = string<br>    rg_name                             = string<br>    dns_prefix                          = string<br>    sku_tier                            = string<br>    private_cluster_enabled             = bool<br>    tags                                = map(string)<br>    http_application_routing_enabled    = optional(bool)<br>    azure_policy_enabled                = optional(bool)<br>    role_based_access_control_enabled   = optional(bool)<br>    open_service_mesh_enabled           = optional(bool)<br>    private_dns_zone_id                 = optional(string)<br>    private_cluster_public_fqdn_enabled = optional(bool)<br>    custom_ca_trust_certificates_base64 = optional(string)<br>    disk_encryption_set_id              = optional(string)<br>    edge_zone                           = optional(string)<br>    image_cleaner_enabled               = optional(bool)<br>    image_cleaner_interval_hours        = optional(number)<br>    local_account_disabled              = optional(bool)<br>    node_os_channel_upgrade             = optional(string)<br>    node_resource_group                 = optional(string)<br>    oidc_issuer_enabled                 = optional(bool)<br>    dns_prefix_private_cluster          = optional(string)<br>    linux_profile = optional(object({<br>      admin_username = string<br>      ssh_key = list(object({<br>        key_data = string<br>      }))<br>    }))<br>    default_node_pool = optional(object({<br>      enable_auto_scaling  = bool<br>      max_count            = number<br>      min_count            = number<br>      type                 = string<br>      orchestrator_version = string<br>      // ... (other attributes as needed)<br>    }))<br>    service_principal = optional(object({<br>      client_id     = string<br>      client_secret = string<br>    }))<br>    identity = optional(object({<br>      type         = string<br>      identity_ids = optional(list(string))<br>    }))<br>    oms_agent = optional(object({<br>      log_analytics_workspace_id = string<br>    }))<br>    network_profile = optional(object({<br>      network_plugin     = string<br>      network_policy     = string<br>      dns_service_ip     = string<br>      docker_bridge_cidr = string<br>      outbound_type      = string<br>      pod_cidr           = string<br>      service_cidr       = string<br>    }))<br>    aci_connector_linux = optional(object({<br>      subnet_name = string<br>    }))<br>    automatic_channel_upgrade = optional(object({<br>      channel = string<br>    }))<br>    api_server_access_profile = optional(object({<br>      authorized_ip_ranges     = list(string)<br>      subnet_id                = string<br>      vnet_integration_enabled = bool<br>    }))<br>    auto_scaler_profile = optional(object({<br>      balance_similar_node_groups      = optional(bool)<br>      expander                         = optional(string)<br>      max_graceful_termination_sec     = optional(number)<br>      max_node_provisioning_time       = optional(string)<br>      max_unready_nodes                = optional(number)<br>      max_unready_percentage           = optional(number)<br>      new_pod_scale_up_delay           = optional(string)<br>      scale_down_delay_after_add       = optional(string)<br>      scale_down_delay_after_delete    = optional(string)<br>      scale_down_delay_after_failure   = optional(string)<br>      scan_interval                    = optional(string)<br>      scale_down_unneeded              = optional(string)<br>      scale_down_unready               = optional(string)<br>      scale_down_utilization_threshold = optional(number)<br>      empty_bulk_delete_max            = optional(number)<br>      skip_nodes_with_local_storage    = optional(bool)<br>      skip_nodes_with_system_pods      = optional(bool)<br>    }))<br>    azure_active_directory_role_based_access_control = optional(object({<br>      azure_admin_group_object_ids = list(string)<br>      // ... (additional attributes as needed)<br>    }))<br>    confidential_computing = optional(object({<br>      sgx_quote_helper_enabled = optional(bool)<br>    }))<br>    http_proxy_config = optional(object({<br>      http_proxy     = string<br>      https_proxy    = string<br>      trusted_ca     = string<br>      exception_list = list(string)<br>    }))<br>    ingress_application_gateway = optional(object({<br>      gateway_id   = optional(string)<br>      gateway_name = optional(string)<br>      subnet_cidr  = optional(string)<br>      subnet_id    = optional(string)<br>    }))<br>    storage_profile = optional(object({<br>      blob_driver_enabled         = optional(bool)<br>      disk_driver_enabled         = optional(bool)<br>      disk_driver_version         = optional(string)<br>      file_driver_enabled         = optional(bool)<br>      snapshot_controller_enabled = optional(bool)<br>    }))<br>    service_mesh_profile = optional(object({<br>      mode                             = string<br>      internal_ingress_gateway_enabled = optional(bool)<br>      external_ingress_gateway_enabled = optional(bool)<br>    }))<br>    key_management_service = optional(object({<br>      key_vault_key_id        = optional(string)<br>      keyvault_network_access = optional(string)<br>    }))<br>    key_vault_secrets_provider = optional(object({<br>      secret_rotation_enabled  = optional(bool)<br>      secret_rotation_interval = optional(string)<br>    }))<br>    kubelet_config = optional(object({<br>      allowed_unsafe_sysctls    = optional(list(string))<br>      container_log_max_line    = optional(number)<br>      container_log_max_size_mb = optional(number)<br>      cpu_cfs_quota_enabled     = optional(bool)<br>      cpu_cfs_quota_period      = optional(string)<br>      cpu_manager_policy        = optional(string)<br>      image_gc_high_threshold   = optional(number)<br>      image_gc_low_threshold    = optional(number)<br>      pod_max_pid               = optional(number)<br>      topology_manager_policy   = optional(string)<br>    }))<br>    kubelet_identity = optional(object({<br>      user_assigned_identity_id = string<br>    }))<br>    maintenance_window = optional(object({<br>      day    = string<br>      hour   = string<br>      minute = string<br>    }))<br>    maintenance_window_auto_upgrade = optional(object({<br>      day    = string<br>      hour   = string<br>      minute = string<br>    }))<br>    maintenance_window_node_os = optional(object({<br>      day    = string<br>      hour   = string<br>      minute = string<br>    }))<br>    microsoft_defender = optional(object({<br>      enabled                    = bool<br>      log_analytics_workspace_id = string<br>    }))<br>    monitor_metrics = optional(object({<br>      annotations_allowed = optional(list(string))<br>      labels_allowed      = optional(list(string))<br>    }))<br>  }))</pre> | `[]` | no |
 
 ## Outputs
 

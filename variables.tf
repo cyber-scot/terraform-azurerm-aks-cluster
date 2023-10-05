@@ -24,6 +24,7 @@ variable "clusters" {
     node_os_channel_upgrade             = optional(string)
     node_resource_group                 = optional(string)
     oidc_issuer_enabled                 = optional(bool)
+    dns_prefix_private_cluster          = optional(string)
     linux_profile = optional(object({
       admin_username = string
       ssh_key = list(object({
@@ -59,26 +60,41 @@ variable "clusters" {
       service_cidr       = string
     }))
     aci_connector_linux = optional(object({
-      enabled     = bool
       subnet_name = string
     }))
     automatic_channel_upgrade = optional(object({
       channel = string
     }))
     api_server_access_profile = optional(object({
-      authorized_ip_ranges = list(string)
+      authorized_ip_ranges     = list(string)
+      subnet_id                = string
+      vnet_integration_enabled = bool
     }))
     auto_scaler_profile = optional(object({
-      balance_similar_node_groups = bool
-      // ... (additional attributes as needed)
+      balance_similar_node_groups      = optional(bool)
+      expander                         = optional(string)
+      max_graceful_termination_sec     = optional(number)
+      max_node_provisioning_time       = optional(string)
+      max_unready_nodes                = optional(number)
+      max_unready_percentage           = optional(number)
+      new_pod_scale_up_delay           = optional(string)
+      scale_down_delay_after_add       = optional(string)
+      scale_down_delay_after_delete    = optional(string)
+      scale_down_delay_after_failure   = optional(string)
+      scan_interval                    = optional(string)
+      scale_down_unneeded              = optional(string)
+      scale_down_unready               = optional(string)
+      scale_down_utilization_threshold = optional(number)
+      empty_bulk_delete_max            = optional(number)
+      skip_nodes_with_local_storage    = optional(bool)
+      skip_nodes_with_system_pods      = optional(bool)
     }))
     azure_active_directory_role_based_access_control = optional(object({
       azure_admin_group_object_ids = list(string)
       // ... (additional attributes as needed)
     }))
     confidential_computing = optional(object({
-      enabled                  = bool
-      sgx_quote_helper_enabled = bool
+      sgx_quote_helper_enabled = optional(bool)
     }))
     http_proxy_config = optional(object({
       http_proxy     = string
@@ -87,18 +103,42 @@ variable "clusters" {
       exception_list = list(string)
     }))
     ingress_application_gateway = optional(object({
-      enabled   = bool
-      subnet_id = string
-      // ... (additional attributes as needed)
+      gateway_id   = optional(string)
+      gateway_name = optional(string)
+      subnet_cidr  = optional(string)
+      subnet_id    = optional(string)
+    }))
+    storage_profile = optional(object({
+      blob_driver_enabled         = optional(bool)
+      disk_driver_enabled         = optional(bool)
+      disk_driver_version         = optional(string)
+      file_driver_enabled         = optional(bool)
+      snapshot_controller_enabled = optional(bool)
+    }))
+    service_mesh_profile = optional(object({
+      mode                             = string
+      internal_ingress_gateway_enabled = optional(bool)
+      external_ingress_gateway_enabled = optional(bool)
     }))
     key_management_service = optional(object({
-      enabled          = bool
-      key_vault_id     = string
-      key_vault_key_id = string
+      key_vault_key_id        = optional(string)
+      keyvault_network_access = optional(string)
     }))
     key_vault_secrets_provider = optional(object({
-      enabled      = bool
-      key_vault_id = string
+      secret_rotation_enabled  = optional(bool)
+      secret_rotation_interval = optional(string)
+    }))
+    kubelet_config = optional(object({
+      allowed_unsafe_sysctls    = optional(list(string))
+      container_log_max_line    = optional(number)
+      container_log_max_size_mb = optional(number)
+      cpu_cfs_quota_enabled     = optional(bool)
+      cpu_cfs_quota_period      = optional(string)
+      cpu_manager_policy        = optional(string)
+      image_gc_high_threshold   = optional(number)
+      image_gc_low_threshold    = optional(number)
+      pod_max_pid               = optional(number)
+      topology_manager_policy   = optional(string)
     }))
     kubelet_identity = optional(object({
       user_assigned_identity_id = string
@@ -123,8 +163,8 @@ variable "clusters" {
       log_analytics_workspace_id = string
     }))
     monitor_metrics = optional(object({
-      enabled = bool
-      // ... (additional attributes as needed)
+      annotations_allowed = optional(list(string))
+      labels_allowed      = optional(list(string))
     }))
   }))
   default = []

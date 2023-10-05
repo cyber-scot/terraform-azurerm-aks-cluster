@@ -23,6 +23,8 @@ resource "azurerm_kubernetes_cluster" "cluster" {
   node_os_channel_upgrade             = each.value.node_os_channel_upgrade
   node_resource_group                 = each.value.node_resource_group
   oidc_issuer_enabled                 = each.value.oidc_issuer_enabled
+  dns_prefix_private_cluster          = each.value.dns_prefix_private_cluster
+  automatic_channel_upgrade           = each.value.automatic_channel_upgrade
 
 
   dynamic "linux_profile" {
@@ -80,16 +82,20 @@ resource "azurerm_kubernetes_cluster" "cluster" {
         max_surge = ""
       }
 
-      kubelet_config {
-
-      }
-
-      linux_os_config {
-
-      }
-
-      node_network_profile {
-
+      dynamic "kubelet_config" {
+        for_each = each.value.kubelet_config != null ? [each.value.kubelet_config] : []
+        content {
+          allowed_unsafe_sysctls    = kubelet_config.value.allowed_unsafe_sysctls
+          container_log_max_line    = kubelet_config.value.container_log_max_line
+          container_log_max_size_mb = kubelet_config.value.container_log_max_size_mb
+          cpu_cfs_quota_enabled     = kubelet_config.value.cpu_cfs_quota_enabled
+          cpu_cfs_quota_period      = kubelet_config.value.cpu_cfs_quota_period
+          cpu_manager_policy        = kubelet_config.value.cpu_manager_policy
+          image_gc_high_threshold   = kubelet_config.value.image_gc_high_threshold
+          image_gc_low_threshold    = kubelet_config.value.image_gc_low_threshold
+          pod_max_pid               = kubelet_config.value.pod_max_pid
+          topology_manager_policy   = kubelet_config.value.topology_manager_policy
+        }
       }
     }
   }
@@ -132,6 +138,17 @@ resource "azurerm_kubernetes_cluster" "cluster" {
     }
   }
 
+  dynamic "storage_profile" {
+    for_each = each.value.storage_profile != null ? [each.value.storage_profile] : []
+    content {
+      blob_driver_enabled         = storage_profile.value.blob_driver_enabled
+      disk_driver_enabled         = storage_profile.value.disk_driver_enabled
+      disk_driver_version         = storage_profile.value.disk_driver_version
+      file_driver_enabled         = storage_profile.value.file_driver_enabled
+      snapshot_controller_enabled = storage_profile.value.snapshot_controller_enabled
+    }
+  }
+
   dynamic "network_profile" {
     for_each = each.value.network_profile != null ? [each.value.network_profile] : []
     content {
@@ -148,7 +165,6 @@ resource "azurerm_kubernetes_cluster" "cluster" {
   dynamic "aci_connector_linux" {
     for_each = each.value.aci_connector_linux != null ? [each.value.aci_connector_linux] : []
     content {
-      enabled     = aci_connector_linux.value.enabled
       subnet_name = aci_connector_linux.value.subnet_name
     }
   }
@@ -163,15 +179,32 @@ resource "azurerm_kubernetes_cluster" "cluster" {
   dynamic "api_server_access_profile" {
     for_each = each.value.api_server_access_profile != null ? [each.value.api_server_access_profile] : []
     content {
-      authorized_ip_ranges = api_server_access_profile.value.authorized_ip_ranges
+      authorized_ip_ranges     = api_server_access_profile.value.authorized_ip_ranges
+      subnet_id                = api_server_access_profile.value.subnet_id
+      vnet_integration_enabled = api_server_access_profile.value.vnet_integration_enabled
     }
   }
 
   dynamic "auto_scaler_profile" {
     for_each = each.value.auto_scaler_profile != null ? [each.value.auto_scaler_profile] : []
     content {
-      balance_similar_node_groups = auto_scaler_profile.value.balance_similar_node_groups
-      // ... (additional attributes as needed)
+      balance_similar_node_groups      = auto_scaler_profile.value.balance_similar_node_groups
+      expander                         = auto_scaler_profile.value.expander
+      max_graceful_termination_sec     = auto_scaler_profile.value.max_graceful_termination_sec
+      max_node_provisioning_time       = auto_scaler_profile.value.max_node_provisioning_time
+      max_unready_nodes                = auto_scaler_profile.value.max_unready_nodes
+      max_unready_percentage           = auto_scaler_profile.value.max_unready_percentage
+      new_pod_scale_up_delay           = auto_scaler_profile.value.new_pod_scale_up_delay
+      scale_down_delay_after_add       = auto_scaler_profile.value.scale_down_delay_after_add
+      scale_down_delay_after_delete    = auto_scaler_profile.value.scale_down_delay_after_delete
+      scale_down_delay_after_failure   = auto_scaler_profile.value.scale_down_delay_after_failure
+      scan_interval                    = auto_scaler_profile.value.scan_interval
+      scale_down_unneeded              = auto_scaler_profile.value.scale_down_unneeded
+      scale_down_unready               = auto_scaler_profile.value.scale_down_unready
+      scale_down_utilization_threshold = auto_scaler_profile.value.scale_down_utilization_threshold
+      empty_bulk_delete_max            = auto_scaler_profile.value.empty_bulk_delete_max
+      skip_nodes_with_local_storage    = auto_scaler_profile.value.skip_nodes_with_local_storage
+      skip_nodes_with_system_pods      = auto_scaler_profile.value.skip_nodes_with_system_pods
     }
   }
 
@@ -187,7 +220,6 @@ resource "azurerm_kubernetes_cluster" "cluster" {
   dynamic "confidential_computing" {
     for_each = each.value.confidential_computing != null ? [each.value.confidential_computing] : []
     content {
-      enabled                  = confidential_computing.value.enabled
       sgx_quote_helper_enabled = confidential_computing.value.sgx_quote_helper_enabled
     }
   }
@@ -207,28 +239,26 @@ resource "azurerm_kubernetes_cluster" "cluster" {
   dynamic "ingress_application_gateway" {
     for_each = each.value.ingress_application_gateway != null ? [each.value.ingress_application_gateway] : []
     content {
-      enabled   = ingress_application_gateway.value.enabled
-      subnet_id = ingress_application_gateway.value.subnet_id
-      // ... (additional attributes as needed)
+      gateway_id   = ingress_application_gateway.value.gateway_id
+      gateway_name = ingress_application_gateway.value.gateway_name
+      subnet_cidr  = ingress_application_gateway.value.subnet_cidr
+      subnet_id    = ingress_application_gateway.value.subnet_id
     }
   }
 
   dynamic "key_management_service" {
     for_each = each.value.key_management_service != null ? [each.value.key_management_service] : []
     content {
-      enabled      = key_management_service.value.enabled
-      key_vault_id = key_management_service.value.key_vault_id
-      // ... (additional attributes as needed)
-      key_vault_key_id = key_management_service.value.key_vault_key_id
+      key_vault_network_access = key_management_service.value.key_vault_network_access
+      key_vault_key_id         = key_management_service.value.key_vault_key_id
     }
   }
 
   dynamic "key_vault_secrets_provider" {
     for_each = each.value.key_vault_secrets_provider != null ? [each.value.key_vault_secrets_provider] : []
     content {
-      enabled      = key_vault_secrets_provider.value.enabled
-      key_vault_id = key_vault_secrets_provider.value.key_vault_id
-      // ... (additional attributes as needed)
+      secret_rotation_enabled  = key_vault_secrets_provider.value.secret_rotation_enabled
+      secret_rotation_interval = key_vault_secrets_provider.value.secret_rotation_interval
     }
   }
 
@@ -266,6 +296,15 @@ resource "azurerm_kubernetes_cluster" "cluster" {
     }
   }
 
+  dynamic "service_mesh_profile" {
+    for_each = each.value.service_mesh_profile != null ? [each.value.service_mesh_profile] : []
+    content {
+      mode                             = service_mesh_profile.value.mode
+      internal_ingress_gateway_enabled = service_mesh_profile.value.internal_ingress_gateway_enabled
+      external_ingress_gateway_enabled = service_mesh_profile.value.external_ingress_gateway_enabled
+    }
+  }
+
   dynamic "microsoft_defender" {
     for_each = each.value.microsoft_defender != null ? [each.value.microsoft_defender] : []
     content {
@@ -277,14 +316,8 @@ resource "azurerm_kubernetes_cluster" "cluster" {
   dynamic "monitor_metrics" {
     for_each = each.value.monitor_metrics != null ? [each.value.monitor_metrics] : []
     content {
-      enabled = monitor_metrics.value.enabled
-      // ... (additional attributes as needed)
+      annotations_allowed = monitor_metrics.value.annotations_allowed
+      labels_allowed      = monitor_metrics.value.labels_allowed
     }
-  }
-
-
-
-  timeouts {
-    create = "20m"
   }
 }
