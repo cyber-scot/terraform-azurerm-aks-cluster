@@ -26,7 +26,7 @@ module "network" {
 }
 
 module "aks_cluster" {
-  source = "../../" # Adjust this path to point to your module
+  source = "cyber-scot/aks-cluster/azurerm"
 
   clusters = [
     {
@@ -34,7 +34,7 @@ module "aks_cluster" {
       rg_name                 = module.rg.rg_name
       location                = module.rg.rg_location
       tags                    = module.rg.rg_tags
-      kubernetes_version      = "1.20.7"
+      kubernetes_version      = "1.28.0"
       dns_prefix              = "exampledns"
       sku_tier                = "Free"
       private_cluster_enabled = false
@@ -53,7 +53,7 @@ module "aks_cluster" {
       network_profile = {
         network_plugin = "kubenet"
         network_policy = "calico"
-        dns_service_ip = "10.0.0.10"
+        dns_service_ip = "10.1.0.10"
         outbound_type  = "loadBalancer"
         pod_cidr       = "10.244.0.0/16"
         service_cidr   = "10.1.0.0/16"

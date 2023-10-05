@@ -28,37 +28,37 @@ module "network" {
 }
 
 module "aks_cluster" {
-  source = "../../"  # Adjust this path to point to your module
+  source = "cyber-scot/aks-cluster/azurerm"
 
   clusters = [
     {
-      name                      = "aks-${var.short}-${var.loc}-${var.env}-01"
-      rg_name                   = module.rg.rg_name
-      location                  = module.rg.rg_location
-      tags                      = module.rg.rg_tags
-      kubernetes_version        = "1.20.7"
-      dns_prefix                = "exampledns"
-      sku_tier                  = "Free"
-      private_cluster_enabled   = false
-      identity_type = "SystemAssigned"
+      name                    = "aks-${var.short}-${var.loc}-${var.env}-01"
+      rg_name                 = module.rg.rg_name
+      location                = module.rg.rg_location
+      tags                    = module.rg.rg_tags
+      kubernetes_version      = "1.28.0"
+      dns_prefix              = "exampledns"
+      sku_tier                = "Free"
+      private_cluster_enabled = false
+      identity_type           = "SystemAssigned"
       default_node_pool = {
-        enable_auto_scaling   = true
-        agents_max_count      = 5
-        agents_min_count      = 1
-        agents_type           = "VirtualMachineScaleSets"
-        pool_name             = "default"
-        vm_size               = "Standard_DS2_v2"
-        os_disk_size_gb       = 30
-        subnet_id             = module.network.subnets_ids["sn1-${module.network.vnet_name}"]
-        count                 = 1
+        enable_auto_scaling = true
+        agents_max_count    = 5
+        agents_min_count    = 1
+        agents_type         = "VirtualMachineScaleSets"
+        pool_name           = "default"
+        vm_size             = "Standard_DS2_v2"
+        os_disk_size_gb     = 30
+        subnet_id           = module.network.subnets_ids["sn1-${module.network.vnet_name}"]
+        count               = 1
       }
       network_profile = {
-        network_plugin     = "kubenet"
-        network_policy     = "calico"
-        dns_service_ip     = "10.0.0.10"
-        outbound_type      = "loadBalancer"
-        pod_cidr           = "10.244.0.0/16"
-        service_cidr       = "10.1.0.0/16"
+        network_plugin = "kubenet"
+        network_policy = "calico"
+        dns_service_ip = "10.1.0.10"
+        outbound_type  = "loadBalancer"
+        pod_cidr       = "10.244.0.0/16"
+        service_cidr   = "10.1.0.0/16"
       }
       service_principal = {
         client_id     = data.azurerm_key_vault_secret.svp_id.value
@@ -85,7 +85,7 @@ No requirements.
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_aks_cluster"></a> [aks\_cluster](#module\_aks\_cluster) | ../../ | n/a |
+| <a name="module_aks_cluster"></a> [aks\_cluster](#module\_aks\_cluster) | cyber-scot/aks-cluster/azurerm | n/a |
 | <a name="module_network"></a> [network](#module\_network) | cyber-scot/network/azurerm | n/a |
 | <a name="module_rg"></a> [rg](#module\_rg) | cyber-scot/rg/azurerm | n/a |
 
