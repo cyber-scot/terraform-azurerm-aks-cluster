@@ -215,8 +215,7 @@ resource "azurerm_kubernetes_cluster" "cluster" {
     }
   }
 
-
-  dynamic "identity" {
+    dynamic "identity" {
     for_each = each.value.identity_type == "SystemAssigned" ? [each.value.identity_type] : []
     content {
       type = each.value.identity_type
@@ -224,9 +223,7 @@ resource "azurerm_kubernetes_cluster" "cluster" {
   }
 
   dynamic "identity" {
-    for_each = try(length(each.value.identity_ids), 0) > 0 || each.value.identity_type == "UserAssigned" ? [
-      each.value.identity_type
-    ] : []
+    for_each = each.value.identity_type == "SystemAssigned, UserAssigned" ? [each.value.identity_type] : []
     content {
       type         = each.value.identity_type
       identity_ids = try(each.value.identity_ids, [])
@@ -234,9 +231,7 @@ resource "azurerm_kubernetes_cluster" "cluster" {
   }
 
   dynamic "identity" {
-    for_each = try(length(each.value.identity_ids), 0) > 0 || each.value.identity_type == "SystemAssigned, UserAssigned" ? [
-      each.value.identity_type
-    ] : []
+    for_each = each.value.identity_type == "UserAssigned" ? [each.value.identity_type] : []
     content {
       type         = each.value.identity_type
       identity_ids = length(try(each.value.identity_ids, [])) > 0 ? each.value.identity_ids : []
