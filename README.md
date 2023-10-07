@@ -217,7 +217,7 @@ resource "azurerm_kubernetes_cluster" "cluster" {
 
 
   dynamic "identity" {
-    for_each =  each.value.identity_type == "SystemAssigned" ? [each.value.identity_type] : []
+    for_each = each.value.identity_type == "SystemAssigned" ? [each.value.identity_type] : []
     content {
       type = each.value.identity_type
     }
