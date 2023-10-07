@@ -222,7 +222,7 @@ resource "azurerm_kubernetes_cluster" "cluster" {
   }
 
   dynamic "identity" {
-    for_each = try(length(each.value.identity_ids), 0) > 0 || each.value.identity_type == "SystemAssigned, UserAssigned" ? [
+    for_each = try(length(each.value.identity_ids), 0) > 0 || each.value.identity_type == "UserAssigned" ? [
       each.value.identity_type
     ] : []
     content {
